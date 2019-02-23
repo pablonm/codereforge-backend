@@ -2,11 +2,18 @@ import bodyParser from 'body-parser'
 import express from 'express'
 import mongoose from 'mongoose'
 
+import CodeFileController from './Models/CodeFile/CodeFileController'
+import CommentController from './Models/Comment/CommentController'
+import PostController from './Models/Post/PostController'
+import RefactoringController from './Models/Refactoring/RefactoringController'
+import TagController from './Models/Tag/TagController'
+import UserController from './Models/User/UserController'
+
 class App {
   public express: express.Application
 
-  constructor(dbUrl: string) {
-    mongoose.connect(dbUrl, { useNewUrlParser: true })
+  constructor() {
+    mongoose.connect(process.env.DB_URL || '', { useNewUrlParser: true })
     this.express = express()
     this.config()
     this.routes()
@@ -18,9 +25,12 @@ class App {
   }
 
   private routes(): void {
-    this.express.get('/', (req, res) => {
-      res.send('hello world')
-    })
+    this.express.use('/codefiles', CodeFileController)
+    this.express.use('/comments', CommentController)
+    this.express.use('/posts', PostController)
+    this.express.use('/refactorings', RefactoringController)
+    this.express.use('/tags', TagController)
+    this.express.use('/users', UserController)
   }
 }
 
