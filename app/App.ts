@@ -10,6 +10,7 @@ import TagController from './Models/Tag/TagController'
 import UserController from './Models/User/UserController'
 
 class App {
+  console.log('hi')
   public express: express.Application
 
   constructor() {
