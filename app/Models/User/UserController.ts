@@ -1,6 +1,7 @@
 import express from 'express'
 import UserModel from './UserModel'
 import IUser from './IUser'
+import CheckUser from '../../Auth/CheckUser'
 
 const router = express.Router()
 
@@ -11,11 +12,21 @@ router.get('/', (req, res) => {
     .catch(err => res.status(500).send(`There was a problem fetching users. Error: ${err}`))
 })
 
-/* Create a new user */
-router.post('/', (req, res) => {
-  UserModel.create(req.body)
-    .then((user: IUser) => res.status(201).send(user))
-    .catch(err => res.status(500).send(`There was a problem creating the user. Error: ${err}`))
+/* Create a new user if doesn't exists */
+router.post('/', CheckUser, async (req, res) => {
+  const auth = req.context!.auth as any
+  const user = await UserModel.findOne({ email: auth.email })
+  if (!user) {
+    UserModel.create({
+      name: auth.name,
+      picture: auth.picture,
+      email: auth.email,
+    })
+      .then((newUser: IUser) => res.status(201).send(newUser))
+      .catch(err => res.status(500).send(`There was a problem creating the user. Error: ${err}`))
+  } else {
+    res.status(200).send()
+  }
 })
 
 export default router

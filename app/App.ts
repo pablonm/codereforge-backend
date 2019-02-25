@@ -1,6 +1,7 @@
 import bodyParser from 'body-parser'
 import express from 'express'
 import mongoose from 'mongoose'
+import cors from 'cors'
 
 import CodeFileController from './Models/CodeFile/CodeFileController'
 import CommentController from './Models/Comment/CommentController'
@@ -20,6 +21,7 @@ class App {
   }
 
   private config(): void {
+    this.express.use(cors())
     this.express.use(bodyParser.json())
     this.express.use(bodyParser.urlencoded({ extended: false }))
   }

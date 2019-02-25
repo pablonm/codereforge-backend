@@ -8,7 +8,8 @@ mongoose.model(
   'User',
   new Schema({
     id: ObjectId,
-    username: { type: String, unique: true, required: true },
+    name: { type: String, required: true },
+    picture: { type: String },
     email: { type: String, unique: true, required: true },
     comments: [{ type: ObjectId, ref: 'Comment' }],
     posts: [{ type: ObjectId, ref: 'Post' }],

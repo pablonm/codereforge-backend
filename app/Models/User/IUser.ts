@@ -2,7 +2,8 @@ import { Document } from 'mongoose'
 
 export default interface IUser extends Document {
   id: string
-  username: string
+  name: string
+  picture: string
   email: string
   comments?: string[]
   posts?: string[]
