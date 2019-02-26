@@ -12,6 +12,13 @@ router.get('/', (req, res) => {
     .catch(err => res.status(500).send(`There was a problem fetching users. Error: ${err}`))
 })
 
+/* Get authenticated user */
+router.get('/me', CheckUser, async (req, res) => {
+  const auth = req.context!.auth as any
+  const user = await UserModel.findOne({ email: auth.email })
+  res.status(200).send(user)
+})
+
 /* Create a new user if doesn't exists */
 router.post('/', CheckUser, async (req, res) => {
   const auth = req.context!.auth as any
