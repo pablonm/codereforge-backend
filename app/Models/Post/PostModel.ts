@@ -11,6 +11,7 @@ mongoose.model(
     name: { type: String, required: true },
     author: { type: ObjectId, ref: 'User', required: true },
     comments: [{ type: ObjectId, ref: 'Comment' }],
+    description: { type: String, required: true },
     refactorings: [{ type: ObjectId, ref: 'Refactoring' }],
     code_files: [{ type: ObjectId, ref: 'CodeFile', required: true }],
     tags: [{ type: ObjectId, ref: 'Tag', required: true }],
