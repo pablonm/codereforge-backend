@@ -9,6 +9,7 @@ mongoose.model(
   new Schema({
     id: ObjectId,
     author: { type: ObjectId, ref: 'User', required: true },
+    description: { type: String, required: true },
     comments: [{ type: ObjectId, ref: 'Comment' }],
     post: { type: ObjectId, ref: 'Post', required: true },
     score: { type: Number, default: 0 },

@@ -5,8 +5,8 @@ export default interface IUser extends Document {
   name: string
   picture: string
   email: string
-  comments?: string[]
-  posts?: string[]
-  refactorings?: string[]
+  comments: string[]
+  posts: string[]
+  refactorings: string[]
   created_at: Date
 }

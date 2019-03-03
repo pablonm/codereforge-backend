@@ -5,8 +5,8 @@ export default interface IPost extends Document {
   name: string
   author: string
   description: string
-  comments?: string[]
-  refactorings?: string[]
+  comments: string[]
+  refactorings: string[]
   code_files: string[]
   tags: string[]
   created_at: Date

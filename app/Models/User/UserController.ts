@@ -8,6 +8,7 @@ const router = express.Router()
 /* Get all users */
 router.get('/', (req, res) => {
   UserModel.find({})
+    .populate('posts')
     .then((users: IUser[]) => res.status(200).send(users))
     .catch(err => res.status(500).send(`There was a problem fetching users. Error: ${err}`))
 })
