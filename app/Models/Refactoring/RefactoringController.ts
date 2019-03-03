@@ -65,6 +65,9 @@ router.post('/vote', CheckUser, async (req, res) => {
     ) {
       throw new Error('You already voted for this refactoring')
     }
+    if (String(refactoring.author) === String(user._id)) {
+      throw new Error("You can't vote your own refactoring")
+    }
     if (Math.abs(body.vote) > 1) throw new Error('You can only give one vote')
     refactoring.voters.push(user._id)
     refactoring.score += body.vote
