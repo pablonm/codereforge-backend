@@ -5,6 +5,10 @@ export default interface IUser extends Document {
   name: string
   picture: string
   email: string
+  emailPublic: boolean
+  profession: string
+  github: string
+  linkedin: string
   comments: string[]
   posts: string[]
   refactorings: string[]

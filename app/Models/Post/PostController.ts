@@ -11,6 +11,7 @@ const router = express.Router()
 router.get('/', (req, res) => {
   PostModel.find({})
     .populate('tags')
+    .populate('refactorings')
     .then((posts: IPost[]) => res.status(200).send(posts))
     .catch(err => res.status(500).send(`There was a problem fetching posts. Error: ${err}`))
 })
