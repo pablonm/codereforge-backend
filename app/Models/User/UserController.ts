@@ -54,7 +54,6 @@ router.get('/me', CheckUser, async (req, res) => {
     if (!user) throw new Error('User not found')
     const processed = {
       ...user.toObject(),
-      email: user.emailPublic ? user.toObject().email : null,
       score: Math.max(
         user
           .toObject()
