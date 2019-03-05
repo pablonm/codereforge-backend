@@ -2,37 +2,106 @@ import express from 'express'
 import UserModel from './UserModel'
 import IUser from './IUser'
 import CheckUser from '../../Auth/CheckUser'
+import IRefactoring from '../Refactoring/IRefactoring'
 
 const router = express.Router()
 
 /* Get all users */
-router.get('/', (req, res) => {
-  UserModel.find({})
-    .populate('posts')
-    .then((users: IUser[]) => res.status(200).send(users))
-    .catch(err => res.status(500).send(`There was a problem fetching users. Error: ${err}`))
+router.get('/', async (req, res) => {
+  try {
+    const users = await UserModel.find({})
+      .populate('posts')
+      .populate('refactorings')
+    const processed = users.map(user => {
+      return {
+        ...user.toObject(),
+        email: user.emailPublic ? user.toObject().email : null,
+        score: Math.max(
+          user
+            .toObject()
+            .refactorings.reduce((sum: number, elem: IRefactoring) => sum + elem.score, 0),
+          0
+        ),
+      }
+    })
+    res.status(200).send(processed)
+  } catch (err) {
+    res.status(500).send(`There was a problem fetching users. Error: ${err}`)
+  }
 })
 
 /* Get authenticated user */
 router.get('/me', CheckUser, async (req, res) => {
   const auth = req.context!.auth as any
-  const user = await UserModel.findOne({ email: auth.email })
-    .populate({
-      path: 'posts',
-      populate: {
-        path: 'tags',
-      },
-    })
-    .populate({
-      path: 'refactorings',
-      populate: {
-        path: 'post',
+  try {
+    const user = await UserModel.findOne({ email: auth.email })
+      .populate({
+        path: 'posts',
         populate: {
           path: 'tags',
         },
-      },
-    })
-  res.status(200).send(user)
+      })
+      .populate({
+        path: 'refactorings',
+        populate: {
+          path: 'post',
+          populate: {
+            path: 'tags',
+          },
+        },
+      })
+    if (!user) throw new Error('User not found')
+    const processed = {
+      ...user.toObject(),
+      email: user.emailPublic ? user.toObject().email : null,
+      score: Math.max(
+        user
+          .toObject()
+          .refactorings.reduce((sum: number, elem: IRefactoring) => sum + elem.score, 0),
+        0
+      ),
+    }
+    res.status(200).send(processed)
+  } catch (err) {
+    res.status(500).send(`There was a problem fetching the user. Error: ${err}`)
+  }
+})
+
+/* Get user by id */
+router.get('/:userId', async (req, res) => {
+  const { params } = req
+  try {
+    const user = await UserModel.findById(params.userId)
+      .populate({
+        path: 'posts',
+        populate: {
+          path: 'tags',
+        },
+      })
+      .populate({
+        path: 'refactorings',
+        populate: {
+          path: 'post',
+          populate: {
+            path: 'tags',
+          },
+        },
+      })
+    if (!user) throw new Error('User not found')
+    const processed = {
+      ...user.toObject(),
+      email: user.emailPublic ? user.toObject().email : null,
+      score: Math.max(
+        user
+          .toObject()
+          .refactorings.reduce((sum: number, elem: IRefactoring) => sum + elem.score, 0),
+        0
+      ),
+    }
+    res.status(200).send(processed)
+  } catch (err) {
+    res.status(500).send(`There was a problem fetching the user. Error: ${err}`)
+  }
 })
 
 /* Create a new user if doesn't exists */
