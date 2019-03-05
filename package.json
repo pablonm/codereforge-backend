@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/cors": "^2.8.4",
     "body-parser": "^1.18.2",
     "cors": "^2.8.5",
     "dotenv": "^6.2.0",
