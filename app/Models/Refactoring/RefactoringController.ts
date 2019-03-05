@@ -5,6 +5,7 @@ import CheckUser from '../../Auth/CheckUser'
 import UserModel from '../User/UserModel'
 import PostModel from '../Post/PostModel'
 import CodeFileModel from '../CodeFile/CodeFileModel'
+import NotificationModel from '../Notification/NotificationModel'
 
 const router = express.Router()
 
@@ -24,6 +25,14 @@ router.post('/', CheckUser, async (req, res) => {
     if (!user) throw new Error('There is no user with that email')
     const post = await PostModel.findById(body.postId)
     if (!post) throw new Error('There is no post with that id')
+    if (String(user._id) !== String(post.author)) {
+      const notification = await NotificationModel.create({
+        message: `${user.name} posted a refactoring in ${post.name}`,
+        postId: post._id,
+      })
+      user.unreadNotifications = true
+      user.notifications.push(notification._id)
+    }
     const codeFile = await CodeFileModel.create({
       file_name: 'CodeFile',
       code: body.codeFiles[0],
@@ -36,6 +45,7 @@ router.post('/', CheckUser, async (req, res) => {
       code_files: [codeFile._id],
     })
     user.refactorings.push(refactoring._id)
+
     user.save()
     post.refactorings.push(refactoring._id)
     post.save()

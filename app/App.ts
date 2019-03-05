@@ -9,6 +9,7 @@ import PostController from './Models/Post/PostController'
 import RefactoringController from './Models/Refactoring/RefactoringController'
 import TagController from './Models/Tag/TagController'
 import UserController from './Models/User/UserController'
+import NotificationController from './Models/Notification/NotificationController'
 
 class App {
   public express: express.Application
@@ -33,6 +34,7 @@ class App {
     this.express.use('/refactorings', RefactoringController)
     this.express.use('/tags', TagController)
     this.express.use('/users', UserController)
+    this.express.use('/notifications', NotificationController)
   }
 }
 

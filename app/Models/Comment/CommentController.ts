@@ -5,6 +5,7 @@ import CheckUser from '../../Auth/CheckUser'
 import UserModel from '../User/UserModel'
 import PostModel from '../Post/PostModel'
 import RefactoringModel from '../Refactoring/RefactoringModel'
+import NotificationModel from '../Notification/NotificationModel'
 
 const router = express.Router()
 
@@ -24,6 +25,14 @@ router.post('/post', CheckUser, async (req, res) => {
     if (!user) throw new Error('There is no user with that email')
     const post = await PostModel.findById(body.postId)
     if (!post) throw new Error('There is no post with that id')
+    if (String(user._id) !== String(post.author)) {
+      const notification = await NotificationModel.create({
+        message: `${user.name} posted a comment in ${post.name}`,
+        postId: post._id,
+      })
+      user.unreadNotifications = true
+      user.notifications.push(notification._id)
+    }
     let comment = await CommentModel.create({
       content: body.content,
       author: user._id,
@@ -48,6 +57,14 @@ router.post('/refactoring', CheckUser, async (req, res) => {
     if (!user) throw new Error('There is no user with that email')
     const refactoring = await RefactoringModel.findById(body.refactoringId)
     if (!refactoring) throw new Error('There is no refactoring with that id')
+    if (String(user._id) !== String(refactoring.author)) {
+      const notification = await NotificationModel.create({
+        message: `${user.name} posted a comment in your refactoring`,
+        postId: refactoring.post,
+      })
+      user.unreadNotifications = true
+      user.notifications.push(notification._id)
+    }
     let comment = await CommentModel.create({
       content: body.content,
       author: user._id,

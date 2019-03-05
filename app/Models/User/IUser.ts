@@ -12,5 +12,7 @@ export default interface IUser extends Document {
   comments: string[]
   posts: string[]
   refactorings: string[]
+  notifications: string[]
+  unreadNotifications: boolean
   created_at: Date
 }

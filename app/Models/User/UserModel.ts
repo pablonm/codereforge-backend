@@ -18,6 +18,8 @@ mongoose.model(
     comments: [{ type: ObjectId, ref: 'Comment' }],
     posts: [{ type: ObjectId, ref: 'Post' }],
     refactorings: [{ type: ObjectId, ref: 'Refactoring' }],
+    notifications: [{ type: ObjectId, ref: 'Notification' }],
+    unreadNotifications: { type: Boolean, default: false },
     created_at: { type: Date, default: Date.now },
   })
 )

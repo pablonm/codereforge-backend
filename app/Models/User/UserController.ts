@@ -50,6 +50,7 @@ router.get('/me', CheckUser, async (req, res) => {
           },
         },
       })
+      .populate({ path: 'notifications' })
     if (!user) throw new Error('User not found')
     const processed = {
       ...user.toObject(),
@@ -129,6 +130,20 @@ router.put('/', CheckUser, async (req, res) => {
     const user = await UserModel.findOne({ email: auth.email })
     if (!user) throw new Error('There is no user with that email')
     const editedUser = await UserModel.findByIdAndUpdate(user._id, { ...body })
+    res.status(200).send(editedUser)
+  } catch (err) {
+    res.status(500).send(`There was a problem updating the user. Error: ${err}`)
+  }
+})
+
+/* Read notifications */
+router.put('/notifications', CheckUser, async (req, res) => {
+  const { body } = req
+  const auth = req.context!.auth as any
+  try {
+    const user = await UserModel.findOne({ email: auth.email })
+    if (!user) throw new Error('There is no user with that email')
+    const editedUser = await UserModel.findByIdAndUpdate(user._id, { unreadNotifications: false })
     res.status(200).send(editedUser)
   } catch (err) {
     res.status(500).send(`There was a problem updating the user. Error: ${err}`)
