@@ -26,12 +26,15 @@ router.post('/', CheckUser, async (req, res) => {
     const post = await PostModel.findById(body.postId)
     if (!post) throw new Error('There is no post with that id')
     if (String(user._id) !== String(post.author)) {
+      const author = await UserModel.findById(post.author)
+      if (!author) throw new Error('Author user not found')
       const notification = await NotificationModel.create({
         message: `${user.name} posted a refactoring in ${post.name}`,
         postId: post._id,
       })
-      user.unreadNotifications = true
-      user.notifications.push(notification._id)
+      author.unreadNotifications = true
+      author.notifications.push(notification._id)
+      author.save()
     }
     const codeFile = await CodeFileModel.create({
       file_name: 'CodeFile',
