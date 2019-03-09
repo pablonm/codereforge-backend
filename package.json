@@ -7,7 +7,8 @@
     "tsc": "tsc",
     "dev": "ts-node-dev --respawn --transpileOnly ./server.ts",
     "prod": "tsc && node ./build/server.js",
-    "lint": "tslint --project ."
+    "lint": "tslint --project .",
+    "deploy": "ssh root@157.230.227.139 sudo bash /home/codereforge-backend/deploy"
   },
   "author": "",
   "license": "ISC",
